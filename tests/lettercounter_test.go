@@ -6,28 +6,53 @@ import (
 	"github.com/Indbrony/lettercounter"
 )
 
+func basicNumberOfVocalsAndConsonantsTest(t *testing.T, input string, expectedVocals, expectedConsonants int) {
+	vocals, consonants := lettercounter.NumberOfVocalsAndConsonants(input)
+	if vocals != expectedVocals || consonants != expectedConsonants {
+		t.Errorf("NumberOfVocalsAndConsonants(%v) fail, expexting vocals = %d, consonants = %d, got vocals = %d, consonants = %d", input, expectedVocals, expectedConsonants, vocals, consonants)
+	}
+}
+func basicNumberOfVocalsAndConsonantsConcurrentTest(t *testing.T, input string, expectedVocals, expectedConsonants int) {
+	vocals, consonants := lettercounter.NumberOfVocalsAndConsonantsConcurrent(input)
+	if vocals != expectedVocals || consonants != expectedConsonants {
+		t.Errorf("NumberOfVocalsAndConsonants(%v) fail, expexting vocals = %d, consonants = %d, got vocals = %d, consonants = %d", input, expectedVocals, expectedConsonants, vocals, consonants)
+	}
+}
+
 func TestNumberOfVocalsAndConsonants(t *testing.T) {
 	//Testing with empty input
-	vocals, consonants := lettercounter.NumberOfVocalsAndConsonants("")
-	if vocals != 0 || consonants != 0 {
-		t.Errorf("NumberOfVocalsAndConsonants(\"\") fail, expexting vocals = %d, consonants = %d, got vocals = %d, consonants = %d", 2, 2, vocals, consonants)
-	}
-
+	basicNumberOfVocalsAndConsonantsTest(t, "", 0, 0)
 	//Testing with input "osama"
-	vocals, consonants = lettercounter.NumberOfVocalsAndConsonants("osama")
-	if vocals != 2 || consonants != 2 {
-		t.Errorf("NumberOfVocalsAndConsonants(\"osama\") fail, expexting vocals = %d, consonants = %d, got vocals = %d, consonants = %d", 2, 2, vocals, consonants)
-	}
-
+	basicNumberOfVocalsAndConsonantsTest(t, "osama", 2, 2)
 	//Testing with input "omama"
-	vocals, consonants = lettercounter.NumberOfVocalsAndConsonants("omama")
-	if vocals != 2 || consonants != 1 {
-		t.Errorf("NumberOfVocalsAndConsonants(\"osama\") fail, expexting vocals = %d, consonants = %d, got vocals = %d, consonants = %d", 2, 2, vocals, consonants)
-	}
-
+	basicNumberOfVocalsAndConsonantsTest(t, "omama", 2, 1)
 	//Testing with input "OmAmAK" for case-sensitivity
-	vocals, consonants = lettercounter.NumberOfVocalsAndConsonants("OmAmAK")
-	if vocals != 2 || consonants != 2 {
-		t.Errorf("NumberOfVocalsAndConsonants(\"osama\") fail, expexting vocals = %d, consonants = %d, got vocals = %d, consonants = %d", 2, 2, vocals, consonants)
+	basicNumberOfVocalsAndConsonantsTest(t, "OmAmAK", 2, 2)
+	//Testing with input "Fuad Mustamirrul Ishlah" to make sure it can handle real world situation
+	basicNumberOfVocalsAndConsonantsTest(t, "Fuad Mustamirrul Ishlah", 3, 8)
+}
+
+func TestNumberOfVocalsAndConsonantsConcurrent(t *testing.T) {
+	//Testing with empty input
+	basicNumberOfVocalsAndConsonantsConcurrentTest(t, "", 0, 0)
+	//Testing with input "osama"
+	basicNumberOfVocalsAndConsonantsConcurrentTest(t, "osama", 2, 2)
+	//Testing with input "omama"
+	basicNumberOfVocalsAndConsonantsConcurrentTest(t, "omama", 2, 1)
+	//Testing with input "OmAmAK" for case-sensitivity
+	basicNumberOfVocalsAndConsonantsConcurrentTest(t, "OmAmAK", 2, 2)
+	//Testing with input "Fuad Mustamirrul Ishlah" to make sure it can handle real world situation
+	basicNumberOfVocalsAndConsonantsConcurrentTest(t, "Fuad Mustamirrul Ishlah", 3, 8)
+}
+
+func BenchmarkNumberOfVocalsAndConsonants(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		lettercounter.NumberOfVocalsAndConsonants("NumberOfVocalsAndConsonantsConcurrent is used to count the number of vocals and consonants in a string concurrently")
+	}
+}
+
+func BenchmarkNumberOfVocalsAndConsonantsConcurrent(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		lettercounter.NumberOfVocalsAndConsonantsConcurrent("NumberOfVocalsAndConsonantsConcurrent is used to count the number of vocals and consonants in a string concurrently")
 	}
 }
